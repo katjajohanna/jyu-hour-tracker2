@@ -9,7 +9,10 @@ provider:
   stage: ${opt:stage, 'dev'}
   region: eu-central-1
   environment:
-    DYNAMODB_TABLE_USERS: Users-dev-hour-tracker-v2
+    DYNAMODB_TABLE_USERS: Users-${self:provider.stage}-${self:service.name}
+    DYNAMODB_TABLE_USERS_ARN: arn:aws:dynamodb:${self:provider.region}:423343990083:table/Users-${self:provider.stage}-${self:service.name}
+    DYNAMODB_TABLE_HOURS: Hours-${self:provider.stage}-${self:service.name}
+    DYNAMODB_TABLE_HOURS_ARN: arn:aws:dynamodb:${self:provider.region}:423343990083:table/Hours-${self:provider.stage}-${self:service.name}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -20,8 +23,10 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource:
-        - 'arn:aws:dynamodb:eu-central-1:423343990083:table/Users-dev-hour-tracker-v2'
-        - 'arn:aws:dynamodb:eu-central-1:423343990083:table/Users-dev-hour-tracker-v2/index/*'
+        - '${self:provider.environment.DYNAMODB_TABLE_USERS_ARN}'
+        - '${self:provider.environment.DYNAMODB_TABLE_USERS_ARN}/index/*'
+        - '${self:provider.environment.DYNAMODB_TABLE_HOURS_ARN}'
+        - '${self:provider.environment.DYNAMODB_TABLE_HOURS_ARN}/index/*'
 
 functions:
   getUsers:
@@ -47,6 +52,21 @@ resources:
       DeletionPolicy: Retain
       Properties:
         TableName: Users-${self:provider.stage}-${self:service.name}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: "S"
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PROVISIONED
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+    Hours:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
+      Properties:
+        TableName: Hours-${self:provider.stage}-${self:service.name}
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: "S"
