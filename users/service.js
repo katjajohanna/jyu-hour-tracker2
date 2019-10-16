@@ -1,42 +1,23 @@
-﻿//const data = require('../_helpers/data')
-//const users = data.users
-let nextId = 6
-
-module.exports = {
-    //authenticate,
-    getAll,
-    //register
-};
-
-async function authenticate({ username, password }) {
-    const user = users.find(u => u.username === username && u.password === password);
-    if (user) {
-        const { password, ...userWithoutPassword } = user;
-        return userWithoutPassword;
-    }
-}
+﻿const AWS = require('aws-sdk')
+const dynamo = new AWS.DynamoDB.DocumentClient({region:process.env.AWS_REGION})
 
 async function getAll() {
-    return {};
-    // return users.map(u => {
-    //     const { password, ...userWithoutPassword } = u;
-    //     return userWithoutPassword;
-    // });
+    return dynamo.scan({
+        TableName: process.env.DYNAMODB_TABLE_USERS
+    })
+    .promise()
+    .then(users => {
+        return users.Items.map(u => {
+            const { password, ...userWithoutPassword } = u;
+            return userWithoutPassword;
+        });
+    })
+    .catch(err => {
+        console.log('Error', err)
+        return {}
+    })
 }
 
-async function register({ username, password, firstName, lastName }) {
-    const newUser = {
-        id: nextId,
-        username,
-        password,
-        firstName,
-        lastName,
-        role: 'member'
-    }
-
-    users.push(newUser)
-    nextId++
-
-    const { pass, ...userWithoutPassword } = newUser;
-    return userWithoutPassword;
-}
+module.exports = {
+    getAll
+};

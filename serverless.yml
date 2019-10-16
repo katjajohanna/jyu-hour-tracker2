@@ -8,6 +8,20 @@ provider:
   runtime: nodejs10.x
   stage: ${opt:stage, 'dev'}
   region: eu-central-1
+  environment:
+    DYNAMODB_TABLE_USERS: Users-dev-hour-tracker-v2
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - 'arn:aws:dynamodb:eu-central-1:423343990083:table/Users-dev-hour-tracker-v2'
+        - 'arn:aws:dynamodb:eu-central-1:423343990083:table/Users-dev-hour-tracker-v2/index/*'
 
 functions:
   getUsers:
