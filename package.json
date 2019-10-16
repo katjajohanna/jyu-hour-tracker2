@@ -1,0 +1,16 @@
+{
+  "name": "demo6",
+  "version": "1.0.0",
+  "description": "Demo 6 for TIES4560/JYU",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "deploy:dev": "sls deploy --conceal -v -s dev",
+    "deploy:function:dev": "sls deploy function --function"
+  },
+  "author": "Johanna Kaihlavirta",
+  "license": "ISC",
+  "devDependencies": {
+    "serverless": "^1.54.0"
+  }
+}

@@ -1,0 +1,19 @@
+service:
+  name: hour-tracker-v2
+
+frameworkVersion: ">=1.2.0 <2.0.0"
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  stage: ${opt:stage, 'dev'}
+  region: eu-central-1
+
+functions:
+  getUsers:
+    handler: users/handler.handler
+    events:
+      - http:
+          path: /users
+          method: GET
+          cors: true
