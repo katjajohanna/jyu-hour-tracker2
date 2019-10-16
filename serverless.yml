@@ -17,3 +17,21 @@ functions:
           path: /users
           method: GET
           cors: true
+
+resources:
+  Resources:
+    Users:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
+      Properties:
+        TableName: Users-${self:provider.stage}-${self:service.name}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: "S"
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PROVISIONED
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
