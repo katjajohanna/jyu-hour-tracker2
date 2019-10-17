@@ -45,6 +45,14 @@ functions:
           method: GET
           cors: true
 
+  updateHour:
+    handler: hours/put-handler.handler
+    events:
+      - http:
+          path: /hours/{id}
+          method: PUT
+          cors: true
+
 resources:
   Resources:
     Users:
@@ -62,6 +70,7 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+
     Hours:
       Type: AWS::DynamoDB::Table
       DeletionPolicy: Retain
