@@ -63,9 +63,8 @@ async function updateHour(id, { projectId, hours, description }) {
 
     return dynamo.update(params)
         .promise()
-        .then(hour => {
-            console.log('Success', hour)
-            return hour // TODO fetch updated hour. This is empty object
+        .then(() => {
+            return get(id)
         })
         .catch(err => {
             console.log('Error', err)
