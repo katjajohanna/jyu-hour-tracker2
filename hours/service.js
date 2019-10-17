@@ -18,6 +18,21 @@ async function getAll() {
     })
 }
 
+async function get(id) {
+    return dynamo.get({
+        TableName: process.env.DYNAMODB_TABLE_HOURS,
+        Key: {id}
+    })
+    .promise()
+    .then(hour => {
+        return hour.Item
+    })
+    .catch(err => {
+        console.log('Error', err)
+        return {}
+    })
+}
+
 async function updateHour(id, { projectId, hours, description }) {
     let updateExpressions = [];
     let expressionAttributeValues = {}
@@ -60,5 +75,6 @@ async function updateHour(id, { projectId, hours, description }) {
 
 module.exports = {
     getAll,
+    get,
     updateHour
 }

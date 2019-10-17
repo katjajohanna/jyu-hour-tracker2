@@ -45,6 +45,14 @@ functions:
           method: GET
           cors: true
 
+  getHour:
+    handler: hours/get-one-handler.handler
+    events:
+      - http:
+          path: /hours/{id}
+          method: GET
+          cors: true
+
   updateHour:
     handler: hours/put-handler.handler
     events:
