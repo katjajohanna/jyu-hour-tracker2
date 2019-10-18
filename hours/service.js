@@ -1,4 +1,6 @@
 const AWS = require('aws-sdk')
+const uuidv4 = require('uuid/v4')
+
 const dynamo = new AWS.DynamoDB.DocumentClient({
     region: process.env.AWS_REGION,
     apiVersion: '2012-08-10'
@@ -26,6 +28,37 @@ async function get(id) {
     .promise()
     .then(hour => {
         return hour.Item
+    })
+    .catch(err => {
+        console.log('Error', err)
+        return {}
+    })
+}
+
+async function saveHour({ userId, projectId, hours, description }) {
+    if (userId == undefined || projectId == undefined ||
+        hours == undefined || description == undefined)
+    {
+        throw new Error('Specify userId, projectId, hours and description')
+    }
+
+    const newHour = {
+        id: uuidv4(),
+        userId,
+        projectId,
+        hours,
+        description
+    }
+
+    console.log('About to save', newHour)
+
+    return dynamo.put({
+        TableName: process.env.DYNAMODB_TABLE_HOURS,
+        Item: newHour
+    })
+    .promise()
+    .then(() => {
+        return newHour
     })
     .catch(err => {
         console.log('Error', err)
@@ -75,5 +108,6 @@ async function updateHour(id, { projectId, hours, description }) {
 module.exports = {
     getAll,
     get,
+    saveHour,
     updateHour
 }

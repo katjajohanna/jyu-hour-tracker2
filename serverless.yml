@@ -53,6 +53,14 @@ functions:
           method: GET
           cors: true
 
+  saveHour:
+    handler: hours/post-handler.handler
+    events:
+      - http:
+          path: /hours/
+          method: POST
+          cors: true
+
   updateHour:
     handler: hours/put-handler.handler
     events:
