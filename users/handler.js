@@ -3,6 +3,12 @@
 module.exports.handler = ((event, context, callback) => {
     console.log(event)
 
+    // Make intentionally slow to trigger an alarm
+    const now = new Date().getTime();
+    while (new Date().getTime() < now + 50) {
+        // wait
+    }
+
     userService.getAll()
     .then(users => {
         console.log('Got users', users)

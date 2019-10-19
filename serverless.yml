@@ -13,6 +13,8 @@ provider:
     DYNAMODB_TABLE_USERS_ARN: arn:aws:dynamodb:${self:provider.region}:423343990083:table/Users-${self:provider.stage}-${self:service.name}
     DYNAMODB_TABLE_HOURS: Hours-${self:provider.stage}-${self:service.name}
     DYNAMODB_TABLE_HOURS_ARN: arn:aws:dynamodb:${self:provider.region}:423343990083:table/Hours-${self:provider.stage}-${self:service.name}
+    SNS_ALARM_TOPIC_NAME: alarmTopic-${self:provider.stage}-${self:service.name}
+    SNS_ALARM_TOPIC_ARN: arn:aws:sns:${self:provider.region}:423343990083:alarmTopic-${self:provider.stage}-${self:service.name}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -77,6 +79,13 @@ functions:
           method: DELETE
           cors: true
 
+  handleAlarm:
+    handler: alarms/handler.handler
+    events:
+      - sns:
+          arn: ${self:provider.environment.SNS_ALARM_TOPIC_ARN}
+          topicName: ${self:provider.environment.SNS_ALARM_TOPIC_NAME}
+
 resources:
   Resources:
     Users:
@@ -110,3 +119,35 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+
+    AlarmTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        DisplayName: Topic for CloudWatch alarms
+        TopicName: ${self:provider.environment.SNS_ALARM_TOPIC_NAME}
+
+plugins:
+  - serverless-plugin-aws-alerts
+
+custom:
+  alerts:
+    dashboards: true
+    topics:
+      ok:
+        topic: ${self:provider.environment.SNS_ALARM_TOPIC_ARN}
+      alarm:
+        topic: ${self:provider.environment.SNS_ALARM_TOPIC_ARN}
+    definitions:
+      functionDuration:
+        description: 'Duration'
+        namespace: 'AWS/Lambda'
+        metric: Duration
+        statistic: Maximum
+        period: 60
+        threshold: 50
+        evaluationPeriods: 1
+        comparisonOperator: GreaterThanOrEqualToThreshold
+        treatMissingData: notBreaching
+
+    alarms:
+      - functionDuration
