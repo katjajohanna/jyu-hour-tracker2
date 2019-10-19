@@ -5,7 +5,7 @@ module.exports.handler = ((event, context, callback) => {
 
     // Make intentionally slow to trigger an alarm
     const now = new Date().getTime();
-    while (new Date().getTime() < now + 50) {
+    while (new Date().getTime() < now + 150) {
         // wait
     }
 

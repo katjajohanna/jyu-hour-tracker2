@@ -144,7 +144,7 @@ custom:
         metric: Duration
         statistic: Maximum
         period: 60
-        threshold: 50
+        threshold: 150
         evaluationPeriods: 1
         comparisonOperator: GreaterThanOrEqualToThreshold
         treatMissingData: notBreaching
