@@ -69,6 +69,14 @@ functions:
           method: PUT
           cors: true
 
+  deleteHour:
+    handler: hours/delete-handler.handler
+    events:
+      - http:
+          path: /hours/{id}
+          method: DELETE
+          cors: true
+
 resources:
   Resources:
     Users:

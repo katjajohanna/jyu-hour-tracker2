@@ -105,9 +105,29 @@ async function updateHour(id, { projectId, hours, description }) {
         })
 }
 
+async function deleteHour(id) {
+    const params = {
+        TableName: process.env.DYNAMODB_TABLE_HOURS,
+        Key: { id }
+    }
+
+    console.log(params)
+
+    return dynamo.delete(params)
+        .promise()
+        .then(() => {
+            return {}
+        })
+        .catch(err => {
+            console.log('Error', err)
+            return {}
+        })
+}
+
 module.exports = {
     getAll,
     get,
     saveHour,
-    updateHour
+    updateHour,
+    deleteHour
 }
