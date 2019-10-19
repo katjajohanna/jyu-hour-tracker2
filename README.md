@@ -38,3 +38,5 @@ Return:
 **PUT /hours/{id}**
 
 Body: Any of the values described in POST endpoint
+
+**DELETE /hours/{id}**
