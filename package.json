@@ -11,7 +11,7 @@
   "author": "Johanna Kaihlavirta",
   "license": "ISC",
   "devDependencies": {
-    "aws-sdk": "^2.550.0",
+    "aws-sdk": "^2.814.0",
     "serverless": "^1.54.0",
     "serverless-plugin-aws-alerts": "^1.4.0"
   },
